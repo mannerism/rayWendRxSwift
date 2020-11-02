@@ -53,3 +53,27 @@ example(of: "DisposeBag") {
 		}
 		.disposed(by: disposeBag)
 }
+
+
+example(of: "create") {
+	enum Droid: Error {
+		case OU812
+	}
+	
+	let disposeBag = DisposeBag()
+	Observable<String>.create { observer in
+		observer.onNext("RD-D2")
+		observer.onError(Droid.OU812)
+		observer.onNext("C-3PO")
+		observer.onNext("K-2SO")
+//		observer.onCompleted()
+		return Disposables.create()
+	}
+	.subscribe(
+		onNext: { print($0) },
+		onError: { print("error:", $0) },
+		onCompleted: { print("completed") },
+		onDisposed: { print("Disposed") }
+	)
+	.disposed(by: disposeBag)
+}
